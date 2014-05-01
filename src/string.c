@@ -34,6 +34,19 @@ str_string_free(struct str_string *str) {
     *str = (struct str_string){NULL, 0};
 }
 
+int
+str_string_clone(const struct str_string str, struct str_string *nstr) {
+    str_string_init(nstr);
+    return str_string_set2(nstr, str.str, str.len);
+}
+
+int
+str_string_copy(const struct str_string str, struct str_string *nstr) {
+    str_string_free(nstr);
+    str_string_init(nstr);
+    return str_string_set2(nstr, str.str, str.len);
+}
+
 void
 str_string_set_ptr(struct str_string *str, char *cstr) {
     str_free(str->str);

@@ -16,6 +16,42 @@
 
 #include "tests.h"
 
+TEST(clone) {
+    struct str_string str, nstr;
+
+    str_string_init(&str);
+    str_string_set(&str, "");
+    str_string_clone(str, &nstr);
+    STRT_STRING_EQ(nstr, "", 0);
+    str_string_free(&str);
+    str_string_free(&nstr);
+
+    str_string_init(&str);
+    str_string_set(&str, "foo");
+    str_string_clone(str, &nstr);
+    STRT_STRING_EQ(nstr, "foo", 3);
+    str_string_free(&str);
+    str_string_free(&nstr);
+}
+
+TEST(copy) {
+    struct str_string str, nstr;
+
+    str_string_init(&str);
+    str_string_init(&nstr);
+    str_string_set(&str, "");
+    str_string_copy(str, &nstr);
+    STRT_STRING_EQ(nstr, "", 0);
+    str_string_free(&nstr);
+
+    str_string_set(&str, "foo");
+    str_string_init(&nstr);
+    str_string_copy(str, &nstr);
+    STRT_STRING_EQ(nstr, "foo", 3);
+    str_string_free(&str);
+    str_string_free(&nstr);
+}
+
 TEST(set) {
     struct str_string str;
 
@@ -49,6 +85,8 @@ main(int argc, char **argv) {
 
     test_suite_start(suite);
 
+    TEST_RUN(suite, clone);
+    TEST_RUN(suite, copy);
     TEST_RUN(suite, set);
 
     test_suite_print_results_and_exit(suite);

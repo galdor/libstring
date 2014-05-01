@@ -43,6 +43,9 @@ struct str_string {
 void str_string_init(struct str_string *);
 void str_string_free(struct str_string *);
 
+int str_string_clone(const struct str_string, struct str_string *);
+int str_string_copy(const struct str_string, struct str_string *);
+
 void str_string_set_ptr(struct str_string *, char *);
 int str_string_set(struct str_string *, const char *);
 int str_string_set2(struct str_string *, const char *, size_t);
