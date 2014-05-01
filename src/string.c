@@ -78,3 +78,32 @@ str_string_set2(struct str_string *str, const char *cstr, size_t len) {
 
     return 0;
 }
+
+int
+str_string_append(struct str_string *str, const char *cstr) {
+    return str_string_append2(str, cstr, strlen(cstr));
+}
+
+int
+str_string_append2(struct str_string *str, const char *cstr, size_t len) {
+    char *nstr;
+    size_t nlen;
+
+    nlen = str->len + len;
+    nstr = str_realloc(str->str, nlen + 1);
+    if (!nstr)
+        return -1;
+
+    memcpy(nstr + str->len, cstr, len);
+    nstr[nlen] = '\0';
+
+    str->str = nstr;
+    str->len = nlen;
+
+    return 0;
+}
+
+int
+str_string_append_string(struct str_string *str, const struct str_string str2) {
+    return str_string_append2(str, str2.str, str2.len);
+}

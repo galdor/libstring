@@ -76,6 +76,34 @@ TEST(set) {
     str_string_free(&str);
 }
 
+TEST(append) {
+    struct str_string str, str2;
+
+    str_string_init(&str);
+    str_string_append(&str, "");
+    STRT_STRING_EQ(str, "", 0);
+    str_string_append(&str, "foo");
+    STRT_STRING_EQ(str, "foo", 3);
+    str_string_append2(&str, " bar", 4);
+    STRT_STRING_EQ(str, "foo bar", 7);
+    str_string_append(&str, "");
+    STRT_STRING_EQ(str, "foo bar", 7);
+    str_string_free(&str);
+
+    str_string_init(&str);
+    str_string_init(&str2);
+    str_string_append(&str, "foo");
+    STRT_STRING_EQ(str, "foo", 3);
+    str_string_set(&str2, " bar");
+    str_string_append_string(&str, str2);
+    STRT_STRING_EQ(str, "foo bar", 7);
+    str_string_set(&str2, " baz");
+    str_string_append_string(&str, str2);
+    STRT_STRING_EQ(str, "foo bar baz", 11);
+    str_string_free(&str);
+    str_string_free(&str2);
+}
+
 int
 main(int argc, char **argv) {
     struct test_suite *suite;
@@ -88,6 +116,7 @@ main(int argc, char **argv) {
     TEST_RUN(suite, clone);
     TEST_RUN(suite, copy);
     TEST_RUN(suite, set);
+    TEST_RUN(suite, append);
 
     test_suite_print_results_and_exit(suite);
 }

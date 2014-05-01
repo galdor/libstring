@@ -50,4 +50,8 @@ void str_string_set_ptr(struct str_string *, char *);
 int str_string_set(struct str_string *, const char *);
 int str_string_set2(struct str_string *, const char *, size_t);
 
+int str_string_append(struct str_string *, const char *);
+int str_string_append2(struct str_string *, const char *, size_t);
+int str_string_append_string(struct str_string *, const struct str_string);
+
 #endif
