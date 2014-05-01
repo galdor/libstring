@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <errno.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "sstring.h"
@@ -80,6 +82,63 @@ str_string_set2(struct str_string *str, const char *cstr, size_t len) {
 }
 
 int
+str_string_set_vformat(struct str_string *str, const char *fmt, va_list ap) {
+    char *nstr;
+    size_t len;
+
+    len = strlen(fmt) + 1;
+    nstr = str_malloc(len);
+    if (!nstr)
+        return -1;
+
+    for (;;) {
+        int ret;
+        va_list local_ap;
+        char *nnstr;
+
+        va_copy(local_ap, ap);
+        ret = vsnprintf(nstr, len, fmt, local_ap);
+        va_end(local_ap);
+
+        if (ret == -1) {
+            str_set_error("cannot format string: %s", strerror(errno));
+            str_free(nstr);
+            return -1;
+        }
+
+        if ((size_t)ret < len)
+            break;
+
+        len = (size_t)ret + 1;
+        nnstr = str_realloc(nstr, len);
+        if (!nnstr) {
+            str_free(nstr);
+            return -1;
+        }
+        nstr = nnstr;
+    }
+
+    str_free(str->str);
+
+    str->str = nstr;
+    str->len = strlen(nstr);
+
+    return 0;
+}
+
+int
+str_string_set_format(struct str_string *str, const char *fmt, ...) {
+    va_list ap;
+    int ret;
+
+    va_start(ap, fmt);
+    ret = str_string_set_vformat(str, fmt, ap);
+    va_end(ap);
+
+    return ret;
+}
+
+int
 str_string_append(struct str_string *str, const char *cstr) {
     return str_string_append2(str, cstr, strlen(cstr));
 }
@@ -106,4 +165,33 @@ str_string_append2(struct str_string *str, const char *cstr, size_t len) {
 int
 str_string_append_string(struct str_string *str, const struct str_string str2) {
     return str_string_append2(str, str2.str, str2.len);
+}
+
+int
+str_string_append_vformat(struct str_string *str, const char *fmt, va_list ap) {
+    struct str_string nstr;
+
+    str_string_init(&nstr);
+    if (str_string_set_vformat(&nstr, fmt, ap) == -1)
+        return -1;
+
+    if (str_string_append_string(str, nstr) == -1) {
+        str_string_free(&nstr);
+        return -1;
+    }
+
+    str_string_free(&nstr);
+    return 0;
+}
+
+int
+str_string_append_format(struct str_string *str, const char *fmt, ...) {
+    va_list ap;
+    int ret;
+
+    va_start(ap, fmt);
+    ret = str_string_append_vformat(str, fmt, ap);
+    va_end(ap);
+
+    return ret;
 }

@@ -49,9 +49,15 @@ int str_string_copy(const struct str_string, struct str_string *);
 void str_string_set_ptr(struct str_string *, char *);
 int str_string_set(struct str_string *, const char *);
 int str_string_set2(struct str_string *, const char *, size_t);
+int str_string_set_vformat(struct str_string *, const char *, va_list);
+int str_string_set_format(struct str_string *, const char *, ...)
+    __attribute__((format(printf, 2, 3)));
 
 int str_string_append(struct str_string *, const char *);
 int str_string_append2(struct str_string *, const char *, size_t);
 int str_string_append_string(struct str_string *, const struct str_string);
+int str_string_append_vformat(struct str_string *, const char *, va_list);
+int str_string_append_format(struct str_string *, const char *, ...)
+    __attribute__((format(printf, 2, 3)));
 
 #endif

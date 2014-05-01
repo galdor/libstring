@@ -76,6 +76,21 @@ TEST(set) {
     str_string_free(&str);
 }
 
+TEST(set_format) {
+    struct str_string str;
+
+    str_string_init(&str);
+    str_string_set_format(&str, "");
+    STRT_STRING_EQ(str, "", 0);
+    str_string_set_format(&str, "%c", 'f');
+    STRT_STRING_EQ(str, "f", 1);
+    str_string_set_format(&str, "foo");
+    STRT_STRING_EQ(str, "foo", 3);
+    str_string_set_format(&str, "foo %d %s", 42, "bar");
+    STRT_STRING_EQ(str, "foo 42 bar", 10);
+    str_string_free(&str);
+}
+
 TEST(append) {
     struct str_string str, str2;
 
@@ -104,6 +119,21 @@ TEST(append) {
     str_string_free(&str2);
 }
 
+TEST(append_format) {
+    struct str_string str;
+
+    str_string_init(&str);
+    str_string_append_format(&str, "");
+    STRT_STRING_EQ(str, "", 0);
+    str_string_append_format(&str, "%c", 'f');
+    STRT_STRING_EQ(str, "f", 1);
+    str_string_append_format(&str, "oo");
+    STRT_STRING_EQ(str, "foo", 3);
+    str_string_append_format(&str, " %d %s", 42, "bar");
+    STRT_STRING_EQ(str, "foo 42 bar", 10);
+    str_string_free(&str);
+}
+
 int
 main(int argc, char **argv) {
     struct test_suite *suite;
@@ -116,7 +146,9 @@ main(int argc, char **argv) {
     TEST_RUN(suite, clone);
     TEST_RUN(suite, copy);
     TEST_RUN(suite, set);
+    TEST_RUN(suite, set_format);
     TEST_RUN(suite, append);
+    TEST_RUN(suite, append_format);
 
     test_suite_print_results_and_exit(suite);
 }
