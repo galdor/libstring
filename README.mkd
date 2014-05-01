@@ -1,0 +1,14 @@
+# libstring
+
+## Description
+
+`libstring` is a small C library to safely handle character strings.
+
+## Dependencies
+
+`libstring` tests depend on [libutest](https://github.com/galdor/libutest).
+
+## Contact
+
+If you have found a bug, have an idea or a question, email me at
+<khaelin@gmail.com>.
